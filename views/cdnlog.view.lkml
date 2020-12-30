@@ -1,5 +1,5 @@
 view: cdnlog {
-  sql_table_name: `yunceng.cdnlog`
+  sql_table_name: `yunceng.cdnlog_new`
     ;;
 
   dimension: http_request {

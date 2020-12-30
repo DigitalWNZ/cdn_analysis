@@ -10,7 +10,24 @@ datagroup: cdn_default_datagroup {
 
 persist_with: cdn_default_datagroup
 
-explore: cdn_transform {}
+explore: cdn_transform {
+  sql_always_where:NET.SAFE_IP_FROM_STRING(${cdn_transform.remote_ip}) BETWEEN NET.SAFE_IP_FROM_STRING(${ip_asn.start_ip}) AND NET.SAFE_IP_FROM_STRING(${ip_asn.end_ip});;
+  join: ip_asn {
+    type: left_outer
+    sql_on: NET.IP_TRUNC(NET.SAFE_IP_FROM_STRING(${cdn_transform.remote_ip}),16) = NET.IP_TRUNC(NET.SAFE_IP_FROM_STRING(${ip_asn.start_ip}),16) ;;
+    relationship: many_to_one
+  }
+}
+
+
+explore: retention_interval {
+  sql_always_where:NET.SAFE_IP_FROM_STRING(${retention_interval.remote_ip}) BETWEEN NET.SAFE_IP_FROM_STRING(${ip_asn.start_ip}) AND NET.SAFE_IP_FROM_STRING(${ip_asn.end_ip});;
+  join: ip_asn {
+    type: left_outer
+    sql_on: NET.IP_TRUNC(NET.SAFE_IP_FROM_STRING(${retention_interval.remote_ip}),16) = NET.IP_TRUNC(NET.SAFE_IP_FROM_STRING(${ip_asn.start_ip}),16) ;;
+    relationship: many_to_one
+  }
+}
 
 explore: cdnlog {
   join: cdnlog__resource {

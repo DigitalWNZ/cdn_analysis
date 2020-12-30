@@ -2,6 +2,7 @@ view: cdn_transform {
   derived_table: {
     sql: SELECT
       substr(jsonpayload_type_loadbalancerlogentry.cacheid,1,3) as metro,
+      jsonpayload_type_loadbalancerlogentry.cacheid,
       jsonpayload_type_loadbalancerlogentry.statusdetails,
       timestamp,
       httpRequest.requestUrl,
@@ -11,9 +12,10 @@ view: cdn_transform {
       httpRequest.remoteIp,
       httpRequest.latency,
       httpRequest.cacheHit,
-      httpRequest.cacheFillBytes,
-      FROM `allen-first.yunceng.cdnlog` clog
-      limit 10;;
+      httpRequest.cacheFillBytes
+      FROM `allen-first.yunceng.cdnlog_new` clog
+      where httpRequest.userAgent not like '%GFE%'
+      ;;
   }
 
 
@@ -30,7 +32,7 @@ view: cdn_transform {
   measure: real_hit_rate {
     type: number
     sql: ${count_hit}/${count} ;;
-    value_format_name: percent_2
+    value_format_name: percent_4
   }
 
   measure: count_distinct_url {
@@ -40,8 +42,8 @@ view: cdn_transform {
 
   measure: expect_hit_rate {
     type: number
-    sql: ${count_distinct_url}/${count} ;;
-    value_format_name: percent_2
+    sql: (1 - ${count_distinct_url}/${count}) ;;
+    value_format_name: percent_4
   }
 
   measure: latency_p50 {
@@ -81,7 +83,7 @@ view: cdn_transform {
   measure: sum_resp_size_hit {
     type: sum
     sql: ${response_size} ;;
-    filters: [cache_hit: "true",statusdetails: "response_from_cache"]
+    filters: [cache_hit: "-NULL",statusdetails: "response_from_cache"]
   }
 
   measure: sum_resp_size_miss {
@@ -99,6 +101,13 @@ view: cdn_transform {
   dimension: metro {
     type: string
     sql: ${TABLE}.metro ;;
+    drill_fields: [cacheid,ip_asn.asn]
+  }
+
+  dimension: cacheid {
+    type: string
+    sql: ${TABLE}.cacheid ;;
+    drill_fields: [ip_asn.asn]
   }
 
   dimension: statusdetails {
@@ -150,6 +159,7 @@ view: cdn_transform {
     type: number
     sql: ${TABLE}.cacheFillBytes ;;
   }
+
 
   set: detail {
     fields: [
