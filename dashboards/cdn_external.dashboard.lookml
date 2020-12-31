@@ -98,7 +98,7 @@
       asn: ip_asn.asn
       url: cdn_transform.request_url
       time: cdn_transform.timestamp_time
-    row: 18
+    row: 28
     col: 0
     width: 24
     height: 12
@@ -206,7 +206,7 @@
       asn: ip_asn.asn
       url: cdn_transform.request_url
       time: cdn_transform.timestamp_time
-    row: 37
+    row: 40
     col: 0
     width: 24
     height: 9
@@ -254,10 +254,56 @@
       asn: ip_asn.asn
       url: cdn_transform.request_url
       time: cdn_transform.timestamp_time
-    row: 30
+    row: 49
     col: 0
     width: 24
     height: 7
+  - title: cacha_hit_by_hour
+    name: cacha_hit_by_hour
+    model: cdn
+    explore: cdn_transform
+    type: looker_line
+    fields: [cdn_transform.timestamp_hour, cdn_transform.expect_hit_rate, cdn_transform.real_hit_rate]
+    fill_fields: [cdn_transform.timestamp_hour]
+    sorts: [cdn_transform.timestamp_hour desc]
+    limit: 500
+    query_timezone: UTC
+    x_axis_gridlines: false
+    y_axis_gridlines: true
+    show_view_names: false
+    show_y_axis_labels: true
+    show_y_axis_ticks: true
+    y_axis_tick_density: default
+    y_axis_tick_density_custom: 5
+    show_x_axis_label: true
+    show_x_axis_ticks: true
+    y_axis_scale_mode: linear
+    x_axis_reversed: false
+    y_axis_reversed: false
+    plot_size_by_field: false
+    trellis: ''
+    stacking: ''
+    limit_displayed_rows: false
+    legend_position: center
+    point_style: none
+    show_value_labels: false
+    label_density: 25
+    x_axis_scale: auto
+    y_axis_combined: true
+    show_null_points: true
+    interpolation: linear
+    series_types: {}
+    defaults_version: 1
+    listen:
+      Metro: cdn_transform.metro
+      CacheID: cdn_transform.cacheid
+      asn: ip_asn.asn
+      url: cdn_transform.request_url
+      time: cdn_transform.timestamp_time
+    row: 18
+    col: 0
+    width: 24
+    height: 10
   filters:
   - name: Metro
     title: Metro

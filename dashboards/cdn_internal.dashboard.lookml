@@ -36,7 +36,7 @@
       url: cdn_transform.request_url
       asn: ip_asn.asn
       time: cdn_transform.timestamp_time
-    row: 42
+    row: 54
     col: 0
     width: 24
     height: 12
@@ -72,7 +72,7 @@
       url: retention_interval.request_url
       asn: ip_asn.asn
       time: retention_interval.timestamp_time
-    row: 20
+    row: 32
     col: 0
     width: 24
     height: 12
@@ -146,7 +146,7 @@
       url: retention_interval.request_url
       asn: ip_asn.asn
       time: retention_interval.timestamp_time
-    row: 12
+    row: 24
     col: 0
     width: 24
     height: 8
@@ -182,10 +182,58 @@
       url: cdn_transform.request_url
       asn: ip_asn.asn
       time: cdn_transform.timestamp_time
-    row: 32
+    row: 44
     col: 0
     width: 24
     height: 10
+  - title: retent_internval_by_hour
+    name: retent_internval_by_hour
+    model: cdn
+    explore: retention_interval
+    type: looker_line
+    fields: [retention_interval.timestamp_hour, retention_interval.retention_avg,
+      retention_interval.retention_interval_p50, retention_interval.retention_interval_p90,
+      retention_interval.retention_interval_p95, retention_interval.retention_interval_p99]
+    fill_fields: [retention_interval.timestamp_hour]
+    sorts: [retention_interval.timestamp_hour desc]
+    limit: 500
+    query_timezone: UTC
+    x_axis_gridlines: false
+    y_axis_gridlines: true
+    show_view_names: false
+    show_y_axis_labels: true
+    show_y_axis_ticks: true
+    y_axis_tick_density: default
+    y_axis_tick_density_custom: 5
+    show_x_axis_label: true
+    show_x_axis_ticks: true
+    y_axis_scale_mode: linear
+    x_axis_reversed: false
+    y_axis_reversed: false
+    plot_size_by_field: false
+    trellis: ''
+    stacking: ''
+    limit_displayed_rows: false
+    legend_position: center
+    point_style: none
+    show_value_labels: false
+    label_density: 25
+    x_axis_scale: auto
+    y_axis_combined: true
+    show_null_points: true
+    interpolation: linear
+    series_types: {}
+    defaults_version: 1
+    listen:
+      metro: retention_interval.metro
+      cacheid: retention_interval.cacheid
+      url: retention_interval.request_url
+      asn: ip_asn.asn
+      time: retention_interval.timestamp_time
+    row: 12
+    col: 0
+    width: 24
+    height: 12
   filters:
   - name: metro
     title: metro
