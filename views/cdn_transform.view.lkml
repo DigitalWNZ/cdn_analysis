@@ -128,7 +128,7 @@ view: cdn_transform {
 
   dimension_group: timestamp {
     type: time
-    timeframes: [time]
+    timeframes: [time,date,hour]
     sql: ${TABLE}.timestamp ;;
   }
 
