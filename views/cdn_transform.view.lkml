@@ -80,6 +80,17 @@ view: cdn_transform {
     filters: [cache_hit: "NULL"]
   }
 
+  measure: sum_resp_size {
+    type: sum
+    sql: ${response_size};;
+  }
+
+  measure: bandwidth {
+    type: number
+    sql: ${sum_resp_size}/{% parameter num_of_seconds %} * {% parameter num_of_bits %} ;;
+    value_format_name: decimal_0
+  }
+
   measure: sum_resp_size_hit {
     type: sum
     sql: ${response_size} ;;
@@ -117,7 +128,27 @@ view: cdn_transform {
 
   dimension_group: timestamp {
     type: time
+    timeframes: [time]
     sql: ${TABLE}.timestamp ;;
+  }
+
+
+  parameter: num_of_seconds {
+    description: "the number of seconds"
+    type: unquoted
+    default_value: "30"
+  }
+  parameter: num_of_bits {
+    description: "the number of bits per byte"
+    type: unquoted
+    default_value: "8"
+  }
+
+  dimension: timekey {
+    label_from_parameter: num_of_seconds
+    type: string
+    sql:
+      safe_cast(TIMESTAMP_SECONDS({% parameter num_of_seconds %} * DIV(UNIX_SECONDS(timestamp(${timestamp_time})), {% parameter num_of_seconds %})) as string);;
   }
 
   dimension: request_url {

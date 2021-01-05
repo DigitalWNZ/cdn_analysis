@@ -11,7 +11,9 @@ datagroup: cdn_default_datagroup {
 persist_with: cdn_default_datagroup
 
 explore: cdn_transform {
-  sql_always_where:NET.SAFE_IP_FROM_STRING(${cdn_transform.remote_ip}) BETWEEN NET.SAFE_IP_FROM_STRING(${ip_asn.start_ip}) AND NET.SAFE_IP_FROM_STRING(${ip_asn.end_ip});;
+  sql_always_where:NET.SAFE_IP_FROM_STRING(${cdn_transform.remote_ip}) BETWEEN NET.SAFE_IP_FROM_STRING(${ip_asn.start_ip}) AND NET.SAFE_IP_FROM_STRING(${ip_asn.end_ip})
+  and ${cdn_transform.status} in (0,200,206) and ${cdn_transform.user_agent} not like '%GFE%'
+  ;;
   join: ip_asn {
     type: left_outer
     sql_on: NET.IP_TRUNC(NET.SAFE_IP_FROM_STRING(${cdn_transform.remote_ip}),16) = NET.IP_TRUNC(NET.SAFE_IP_FROM_STRING(${ip_asn.start_ip}),16) ;;
