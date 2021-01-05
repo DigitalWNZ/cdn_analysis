@@ -94,7 +94,7 @@ view: cdn_transform {
   measure: sum_resp_size_hit {
     type: sum
     sql: ${response_size} ;;
-    filters: [cache_hit: "-NULL",statusdetails: "response_from_cache"]
+    filters: [cache_hit: "-NULL"]
   }
 
   measure: sum_resp_size_miss {
@@ -138,10 +138,17 @@ view: cdn_transform {
     type: unquoted
     default_value: "30"
   }
+
   parameter: num_of_bits {
     description: "the number of bits per byte"
     type: unquoted
     default_value: "8"
+  }
+
+  parameter: num_of_minutes {
+    description: "the number of minutes"
+    type: unquoted
+    default_value: "15"
   }
 
   dimension: timekey {
@@ -149,6 +156,13 @@ view: cdn_transform {
     type: string
     sql:
       safe_cast(TIMESTAMP_SECONDS({% parameter num_of_seconds %} * DIV(UNIX_SECONDS(timestamp(${timestamp_time})), {% parameter num_of_seconds %})) as string);;
+  }
+
+  dimension: timekey_min {
+    label_from_parameter: num_of_minutes
+    type: string
+    sql:
+      safe_cast(TIMESTAMP_SECONDS({% parameter num_of_minutes %}*60 * DIV(UNIX_SECONDS(timestamp(${timestamp_time})), {% parameter num_of_minutes %}*60)) as string);;
   }
 
   dimension: request_url {
