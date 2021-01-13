@@ -1,6 +1,8 @@
+include: "navigation_bar.view.lkml"
 view: cdnlog {
   sql_table_name: `yunceng.cdnlog_new`
     ;;
+  extends: [navigation_bar]
 
   dimension: http_request {
     hidden: yes

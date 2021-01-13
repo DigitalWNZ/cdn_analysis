@@ -1,6 +1,8 @@
+include: "navigation_bar.view.lkml"
 view: ip_asn {
   sql_table_name: `allen-first.yunceng.ipASN`
     ;;
+  extends: [navigation_bar]
 
   dimension: asn {
     type: string

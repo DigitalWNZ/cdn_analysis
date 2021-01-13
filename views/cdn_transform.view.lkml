@@ -19,9 +19,15 @@ view: cdn_transform {
   }
 
 
+
   measure: count {
     type: count
     drill_fields: [detail*]
+  }
+
+  measure: count_filtered {
+    type: count
+    filters: [status: "0,200,206", user_agent: "-%GFE%"]
   }
 
   measure: count_hit {
@@ -29,9 +35,20 @@ view: cdn_transform {
     filters: [cache_hit:"-NULL"]
   }
 
+  measure: count_hit_filtered {
+    type: count
+    filters: [cache_hit:"-NULL",status: "0,200,206", user_agent: "-%GFE%"]
+  }
+
   measure: real_hit_rate {
     type: number
-    sql: ${count_hit}/${count} ;;
+    sql: if (${count} = 0,0,${count_hit}/${count}) ;;
+    value_format_name: percent_4
+  }
+
+  measure: real_hit_rate_filtered {
+    type: number
+    sql: if (${count_filtered} = 0,0,${count_hit_filtered}/${count_filtered}) ;;
     value_format_name: percent_4
   }
 
@@ -40,9 +57,21 @@ view: cdn_transform {
     sql: ${request_url} ;;
   }
 
+  measure: count_distinct_url_filtered {
+    type: count_distinct
+    sql: ${request_url} ;;
+    filters: [status: "0,200,206", user_agent: "-%GFE%"]
+  }
+
   measure: expect_hit_rate {
     type: number
-    sql: (1 - ${count_distinct_url}/${count}) ;;
+    sql: if (${count}=0,1,(1 - ${count_distinct_url}/${count}));;
+    value_format_name: percent_4
+  }
+
+  measure: expect_hit_rate_filtered {
+    type: number
+    sql: if (${count_filtered}=0,0,(1 - ${count_distinct_url_filtered}/${count_filtered}));;
     value_format_name: percent_4
   }
 
@@ -50,45 +79,57 @@ view: cdn_transform {
     type: percentile
     percentile: 50
     sql: ${latency} ;;
-    filters: [cache_hit: "NULL"]
+    filters: [cache_hit: "NULL",status: "0,200,206", user_agent: "-%GFE%"]
+    value_format_name: decimal_2
   }
 
   measure: latency_p90 {
     type: percentile
     percentile: 90
     sql: ${latency} ;;
-    filters: [cache_hit: "NULL"]
+    filters: [cache_hit: "NULL",status: "0,200,206", user_agent: "-%GFE%"]
+    value_format_name: decimal_2
   }
 
   measure: latency_p95 {
     type: percentile
     percentile: 95
     sql: ${latency} ;;
-    filters: [cache_hit: "NULL"]
+    filters: [cache_hit: "NULL",status: "0,200,206", user_agent: "-%GFE%"]
+    value_format_name: decimal_2
   }
 
   measure: latency_p99 {
     type: percentile
     percentile: 99
     sql: ${latency} ;;
-    filters: [cache_hit: "NULL"]
+    filters: [cache_hit: "NULL",status: "0,200,206", user_agent: "-%GFE%"]
+    value_format_name: decimal_2
   }
 
   measure: latency_median {
     type: median
     sql: ${latency} ;;
-    filters: [cache_hit: "NULL"]
+    filters: [cache_hit: "NULL",status: "0,200,206", user_agent: "-%GFE%"]
+    value_format_name: decimal_2
   }
+
+  measure: bandwidth {
+    type: number
+    sql: ${sum_resp_size_filtered}/{% parameter num_of_seconds %} * {% parameter num_of_bits %} ;;
+    value_format_name: decimal_0
+  }
+
 
   measure: sum_resp_size {
     type: sum
     sql: ${response_size};;
   }
 
-  measure: bandwidth {
-    type: number
-    sql: ${sum_resp_size}/{% parameter num_of_seconds %} * {% parameter num_of_bits %} ;;
-    value_format_name: decimal_0
+  measure: sum_resp_size_filtered {
+    type: sum
+    sql: ${response_size};;
+    filters: [status: "0,200,206", user_agent: "-%GFE%"]
   }
 
   measure: sum_resp_size_hit {
@@ -97,15 +138,84 @@ view: cdn_transform {
     filters: [cache_hit: "-NULL"]
   }
 
+  measure: sum_resp_size_hit_filtered {
+    type: sum
+    sql: ${response_size} ;;
+    filters: [cache_hit: "-NULL",status: "0,200,206", user_agent: "-%GFE%"]
+  }
+
   measure: sum_resp_size_miss {
     type: sum
     sql: ${response_size} ;;
     filters: [cache_hit: "NULL",statusdetails: "response_sent_by_backend"]
   }
 
+  measure: sum_resp_size_miss_filtered {
+    type: sum
+    sql: ${response_size} ;;
+    filters: [cache_hit: "NULL",statusdetails: "response_sent_by_backend",status: "0,200,206", user_agent: "-%GFE%"]
+  }
+
   measure: sum_cache_fill {
     type: sum
     sql: ${cache_fill_bytes} ;;
+  }
+
+  measure: sum_cache_fill_filtered {
+    type: sum
+    sql: ${cache_fill_bytes} ;;
+    filters: [status: "0,200,206", user_agent: "-%GFE%"]
+  }
+
+  measure: sum_non_cache_fill {
+    type: number
+    sql: ${sum_resp_size} - ${sum_cache_fill} ;;
+  }
+
+  measure: sum_non_cache_fill_filtered {
+    type: number
+    sql: ${sum_resp_size_filtered} - ${sum_cache_fill_filtered} ;;
+  }
+
+  measure: count_distinct_remote_ip {
+    type: count_distinct
+    sql: ${remote_ip} ;;
+  }
+
+  measure: count_distinct_remote_ip_filtered {
+    type: count_distinct
+    sql: ${remote_ip} ;;
+    filters: [status: "0,200,206", user_agent: "-%GFE%"]
+  }
+
+  dimension: request_protocal {
+    type: string
+    sql: REGEXP_EXTRACT(${request_url}, r"([a-zA-Z0-9]+):\/\/") ;;
+  }
+
+  dimension: request_extension {
+    type: string
+    sql: REGEXP_EXTRACT(
+      left(${request_url},if(strpos(${request_url},'?')=0,length(${request_url}),strpos(${request_url},'?')-1)),
+      r"[a-zA-Z0-9_.+-]+\.([a-zA-Z0-9-]+)$"
+      );;
+    # REGEXP_EXTRACT(${request_url}, r"[a-zA-Z0-9_.+-]+\.([a-zA-Z0-9-.]+$)");;
+  }
+
+  # dimension: rank_test {
+  #   type: number
+  #   sql: rank() over (partition by ${ip_asn.country} order by ${count});;
+  # }
+
+  # dimension: country_rank {
+  #   type: string
+  #   sql:  ${rank_test} || ${ip_asn.country} ;;
+  # }
+
+  dimension: status_tier {
+    type: tier
+    tiers: [200,300,400,500]
+    sql: ${status} ;;
   }
 
 

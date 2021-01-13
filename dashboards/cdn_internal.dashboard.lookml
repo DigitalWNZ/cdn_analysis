@@ -3,8 +3,8 @@
   layout: newspaper
   preferred_viewer: dashboards
   elements:
-  - name: bill_by_country
-    title: bill_by_country
+  - name: Response Size by Country
+    title: Response Size by Country
     model: cdn
     explore: cdn_transform
     type: looker_grid
@@ -24,10 +24,26 @@
     limit_displayed_rows: false
     enable_conditional_formatting: false
     header_text_alignment: left
-    header_font_size: 12
-    rows_font_size: 12
+    header_font_size: '12'
+    rows_font_size: '12'
     conditional_formatting_include_totals: false
     conditional_formatting_include_nulls: false
+    show_sql_query_menu_options: false
+    show_totals: true
+    show_row_totals: true
+    series_cell_visualizations:
+      cdn_transform.sum_cache_fill:
+        is_active: true
+      cdn_transform.sum_resp_size_hit:
+        is_active: true
+        palette:
+          palette_id: 1e4d66b9-f066-4c33-b0b7-cc10b4810688
+          collection_id: b43731d5-dc87-4a8e-b807-635bef3948e7
+      cdn_transform.sum_resp_size_miss:
+        is_active: true
+        palette:
+          palette_id: 4a543302-b64d-409c-9863-679b5b230aac
+          collection_id: b43731d5-dc87-4a8e-b807-635bef3948e7
     series_types: {}
     defaults_version: 1
     listen:
@@ -36,7 +52,7 @@
       url: cdn_transform.request_url
       asn: ip_asn.asn
       time: cdn_transform.timestamp_time
-    row: 54
+    row: 77
     col: 0
     width: 24
     height: 12
@@ -72,12 +88,12 @@
       url: retention_interval.request_url
       asn: ip_asn.asn
       time: retention_interval.timestamp_time
-    row: 32
+    row: 42
     col: 0
     width: 24
-    height: 12
-  - title: Retention_by_metro
-    name: Retention_by_metro
+    height: 11
+  - title: Retention by Metro
+    name: Retention by Metro
     model: cdn
     explore: retention_interval
     type: looker_grid
@@ -98,10 +114,31 @@
     limit_displayed_rows: false
     enable_conditional_formatting: false
     header_text_alignment: left
-    header_font_size: 12
-    rows_font_size: 12
+    header_font_size: '12'
+    rows_font_size: '12'
     conditional_formatting_include_totals: false
     conditional_formatting_include_nulls: false
+    show_sql_query_menu_options: false
+    show_totals: true
+    show_row_totals: true
+    series_cell_visualizations:
+      retention_interval.retention_interval_p50:
+        is_active: true
+      retention_interval.retention_interval_p95:
+        is_active: true
+        palette:
+          palette_id: 471a8295-662d-46fc-bd2d-2d0acd370c1e
+          collection_id: b43731d5-dc87-4a8e-b807-635bef3948e7
+      retention_interval.retention_interval_p90:
+        is_active: true
+        palette:
+          palette_id: 1e4d66b9-f066-4c33-b0b7-cc10b4810688
+          collection_id: b43731d5-dc87-4a8e-b807-635bef3948e7
+      retention_interval.retention_interval_p99:
+        is_active: true
+        palette:
+          palette_id: afd46b40-e939-4ace-bffd-69d1bb16ee05
+          collection_id: b43731d5-dc87-4a8e-b807-635bef3948e7
     defaults_version: 1
     listen:
       metro: retention_interval.metro
@@ -109,10 +146,10 @@
       url: retention_interval.request_url
       asn: ip_asn.asn
       time: retention_interval.timestamp_time
-    row: 0
+    row: 8
     col: 0
     width: 24
-    height: 12
+    height: 10
   - title: URL Exchange Summary
     name: URL Exchange Summary
     model: cdn
@@ -134,10 +171,18 @@
     limit_displayed_rows: false
     enable_conditional_formatting: false
     header_text_alignment: left
-    header_font_size: 12
-    rows_font_size: 12
+    header_font_size: '12'
+    rows_font_size: '12'
     conditional_formatting_include_totals: false
     conditional_formatting_include_nulls: false
+    show_sql_query_menu_options: false
+    show_totals: true
+    show_row_totals: true
+    series_cell_visualizations:
+      retention_interval.retention_avg:
+        is_active: true
+      retention_interval.count:
+        is_active: true
     series_types: {}
     defaults_version: 1
     listen:
@@ -146,10 +191,10 @@
       url: retention_interval.request_url
       asn: ip_asn.asn
       time: retention_interval.timestamp_time
-    row: 24
+    row: 32
     col: 0
     width: 24
-    height: 8
+    height: 10
   - title: URL Access History
     name: URL Access History
     model: cdn
@@ -182,12 +227,12 @@
       url: cdn_transform.request_url
       asn: ip_asn.asn
       time: cdn_transform.timestamp_time
-    row: 44
+    row: 53
     col: 0
     width: 24
     height: 10
-  - title: retent_internval_by_hour
-    name: retent_internval_by_hour
+  - title: Retention Interval by Hour
+    name: Retention Interval by Hour
     model: cdn
     explore: retention_interval
     type: looker_line
@@ -230,12 +275,12 @@
       url: retention_interval.request_url
       asn: ip_asn.asn
       time: retention_interval.timestamp_time
-    row: 12
+    row: 18
     col: 0
     width: 24
     height: 12
-  - title: resp_size_by_seconds
-    name: resp_size_by_seconds
+  - title: Response Size by Seconds
+    name: Response Size by Seconds
     model: cdn
     explore: cdn_transform
     type: looker_line
@@ -276,12 +321,182 @@
     defaults_version: 1
     series_types: {}
     listen:
+      metro: cdn_transform.metro
+      cacheid: cdn_transform.cacheid
+      url: cdn_transform.request_url
+      asn: ip_asn.asn
+      time: cdn_transform.timestamp_time
       "# of seconds": cdn_transform.num_of_seconds
       "# of bits": cdn_transform.num_of_bits
-    row: 66
+    row: 65
     col: 0
     width: 24
     height: 12
+  - title: Expect Hit Rate
+    name: Expect Hit Rate
+    model: cdn
+    explore: cdn_transform
+    type: single_value
+    fields: [cdn_transform.expect_hit_rate, cdn_transform.real_hit_rate]
+    filters: {}
+    limit: 500
+    column_limit: 50
+    query_timezone: UTC
+    custom_color_enabled: true
+    show_single_value_title: true
+    show_comparison: false
+    comparison_type: value
+    comparison_reverse_colors: false
+    show_comparison_label: true
+    enable_conditional_formatting: false
+    conditional_formatting_include_totals: false
+    conditional_formatting_include_nulls: false
+    x_axis_gridlines: false
+    y_axis_gridlines: true
+    show_view_names: false
+    show_y_axis_labels: true
+    show_y_axis_ticks: true
+    y_axis_tick_density: default
+    y_axis_tick_density_custom: 5
+    show_x_axis_label: true
+    show_x_axis_ticks: true
+    y_axis_scale_mode: linear
+    x_axis_reversed: false
+    y_axis_reversed: false
+    plot_size_by_field: false
+    trellis: ''
+    stacking: ''
+    limit_displayed_rows: false
+    legend_position: center
+    point_style: none
+    show_value_labels: false
+    label_density: 25
+    x_axis_scale: auto
+    y_axis_combined: true
+    show_null_points: true
+    interpolation: linear
+    series_types: {}
+    defaults_version: 1
+    listen:
+      metro: cdn_transform.metro
+      cacheid: cdn_transform.cacheid
+      url: cdn_transform.request_url
+      asn: ip_asn.asn
+      time: cdn_transform.timestamp_time
+    row: 4
+    col: 0
+    width: 13
+    height: 2
+  - title: Real Hit Rate
+    name: Real Hit Rate
+    model: cdn
+    explore: cdn_transform
+    type: single_value
+    fields: [cdn_transform.real_hit_rate]
+    filters: {}
+    limit: 500
+    column_limit: 50
+    query_timezone: UTC
+    custom_color_enabled: true
+    show_single_value_title: true
+    show_comparison: false
+    comparison_type: value
+    comparison_reverse_colors: false
+    show_comparison_label: true
+    enable_conditional_formatting: false
+    conditional_formatting_include_totals: false
+    conditional_formatting_include_nulls: false
+    x_axis_gridlines: false
+    y_axis_gridlines: true
+    show_view_names: false
+    show_y_axis_labels: true
+    show_y_axis_ticks: true
+    y_axis_tick_density: default
+    y_axis_tick_density_custom: 5
+    show_x_axis_label: true
+    show_x_axis_ticks: true
+    y_axis_scale_mode: linear
+    x_axis_reversed: false
+    y_axis_reversed: false
+    plot_size_by_field: false
+    trellis: ''
+    stacking: ''
+    limit_displayed_rows: false
+    legend_position: center
+    point_style: none
+    show_value_labels: false
+    label_density: 25
+    x_axis_scale: auto
+    y_axis_combined: true
+    show_null_points: true
+    interpolation: linear
+    series_types: {}
+    defaults_version: 1
+    listen:
+      metro: cdn_transform.metro
+      cacheid: cdn_transform.cacheid
+      url: cdn_transform.request_url
+      asn: ip_asn.asn
+      time: cdn_transform.timestamp_time
+    row: 4
+    col: 13
+    width: 11
+    height: 2
+  - name: "<span class='fa fa-road'>Expect Hit Rate vs Real Hit Rate</span>"
+    type: text
+    title_text: "<span class='fa fa-road'>Expect Hit Rate vs Real Hit Rate</span>"
+    subtitle_text: "<p>How far to get to the optimum hit rate?</p>"
+    row: 2
+    col: 0
+    width: 24
+    height: 2
+  - name: "<span class='fa fa-retweet'> Retention Analysis </span>"
+    type: text
+    title_text: "<span class='fa fa-retweet'> Retention Analysis </span>"
+    subtitle_text: "<p>How fast url is exchanged? </p>"
+    row: 6
+    col: 0
+    width: 24
+    height: 2
+  - name: "<span class='fa fa-usd'> Financial Analysis </span>"
+    type: text
+    title_text: "<span class='fa fa-usd'> Financial Analysis </span>"
+    subtitle_text: "<p>Is the bill to customer right? </p>"
+    row: 63
+    col: 0
+    width: 24
+    height: 2
+  - name: "<span class='fa fa-info-circle'> URL Exchange Analysis </span>"
+    type: text
+    title_text: "<span class='fa fa-info-circle'> URL Exchange Analysis </span>"
+    subtitle_text: "<p>Search each URL exchange </p>"
+    row: 30
+    col: 0
+    width: 24
+    height: 2
+  - title: navigation_bar
+    name: navigation_bar
+    model: cdn
+    explore: cdnlog
+    type: single_value
+    fields: [cdnlog.dash_nav]
+    limit: 500
+    query_timezone: America/Los_Angeles
+    custom_color_enabled: true
+    show_single_value_title: true
+    show_comparison: false
+    comparison_type: value
+    comparison_reverse_colors: false
+    show_comparison_label: true
+    enable_conditional_formatting: false
+    conditional_formatting_include_totals: false
+    conditional_formatting_include_nulls: false
+    series_types: {}
+    defaults_version: 1
+    row: 0
+    col: 0
+    width: 24
+    height: 2
   filters:
   - name: metro
     title: metro
@@ -326,7 +541,7 @@
   - name: time
     title: time
     type: field_filter
-    default_value: 2 days
+    default_value: 20 days
     allow_multiple_values: true
     required: false
     model: cdn
