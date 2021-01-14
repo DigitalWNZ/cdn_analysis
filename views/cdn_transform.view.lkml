@@ -79,7 +79,7 @@ view: cdn_transform {
     type: percentile
     percentile: 50
     sql: ${latency} ;;
-    filters: [cache_hit: "NULL",status: "0,200,206", user_agent: "-%GFE%"]
+    filters: [cache_hit: "NULL",status: "0,200,206", user_agent: "-%GFE%",latency: "<100"]
     value_format_name: decimal_2
   }
 
@@ -87,7 +87,7 @@ view: cdn_transform {
     type: percentile
     percentile: 90
     sql: ${latency} ;;
-    filters: [cache_hit: "NULL",status: "0,200,206", user_agent: "-%GFE%"]
+    filters: [cache_hit: "NULL",status: "0,200,206", user_agent: "-%GFE%",latency: "<100"]
     value_format_name: decimal_2
   }
 
@@ -95,7 +95,7 @@ view: cdn_transform {
     type: percentile
     percentile: 95
     sql: ${latency} ;;
-    filters: [cache_hit: "NULL",status: "0,200,206", user_agent: "-%GFE%"]
+    filters: [cache_hit: "NULL",status: "0,200,206", user_agent: "-%GFE%",latency: "<100"]
     value_format_name: decimal_2
   }
 
@@ -103,14 +103,14 @@ view: cdn_transform {
     type: percentile
     percentile: 99
     sql: ${latency} ;;
-    filters: [cache_hit: "NULL",status: "0,200,206", user_agent: "-%GFE%"]
+    filters: [cache_hit: "NULL",status: "0,200,206", user_agent: "-%GFE%",latency: "<100"]
     value_format_name: decimal_2
   }
 
   measure: latency_median {
     type: median
     sql: ${latency} ;;
-    filters: [cache_hit: "NULL",status: "0,200,206", user_agent: "-%GFE%"]
+    filters: [cache_hit: "NULL",status: "0,200,206", user_agent: "-%GFE%",latency: "<100"]
     value_format_name: decimal_2
   }
 
@@ -123,47 +123,55 @@ view: cdn_transform {
 
   measure: sum_resp_size {
     type: sum
-    sql: ${response_size};;
+    sql: ${response_size}/(1024*1024*1024);;
+    value_format_name: decimal_2
   }
 
   measure: sum_resp_size_filtered {
     type: sum
-    sql: ${response_size};;
+    sql: ${response_size}/(1024*1024*1024);;
+    value_format_name: decimal_2
     filters: [status: "0,200,206", user_agent: "-%GFE%"]
   }
 
   measure: sum_resp_size_hit {
     type: sum
-    sql: ${response_size} ;;
+    sql: ${response_size} /(1024*1024*1024);;
+    value_format_name: decimal_2
     filters: [cache_hit: "-NULL"]
   }
 
   measure: sum_resp_size_hit_filtered {
     type: sum
-    sql: ${response_size} ;;
+    sql: ${response_size} /(1024*1024*1024);;
+    value_format_name: decimal_2
     filters: [cache_hit: "-NULL",status: "0,200,206", user_agent: "-%GFE%"]
   }
 
   measure: sum_resp_size_miss {
     type: sum
-    sql: ${response_size} ;;
+    sql: ${response_size} /(1024*1024*1024);;
+    value_format_name: decimal_2
     filters: [cache_hit: "NULL",statusdetails: "response_sent_by_backend"]
   }
 
   measure: sum_resp_size_miss_filtered {
     type: sum
-    sql: ${response_size} ;;
+    sql: ${response_size} /(1024*1024*1024);;
+    value_format_name: decimal_2
     filters: [cache_hit: "NULL",statusdetails: "response_sent_by_backend",status: "0,200,206", user_agent: "-%GFE%"]
   }
 
   measure: sum_cache_fill {
     type: sum
-    sql: ${cache_fill_bytes} ;;
+    sql: ${cache_fill_bytes} /(1024*1024*1024);;
+    value_format_name: decimal_2
   }
 
   measure: sum_cache_fill_filtered {
     type: sum
-    sql: ${cache_fill_bytes} ;;
+    sql: ${cache_fill_bytes} /(1024*1024*1024);;
+    value_format_name: decimal_2
     filters: [status: "0,200,206", user_agent: "-%GFE%"]
   }
 
