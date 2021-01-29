@@ -7,11 +7,13 @@
     title: Request by Metro
     model: cdn
     explore: cdn_transform
-    type: looker_column
+    type: looker_pie
     fields: [cdn_transform.metro, cdn_transform.count]
     sorts: [cdn_transform.count desc]
-    limit: 500
+    limit: 20
     column_limit: 50
+    value_labels: legend
+    label_type: labPer
     x_axis_gridlines: false
     y_axis_gridlines: true
     show_view_names: false
@@ -60,10 +62,10 @@
       asn: ip_asn.asn
       url: cdn_transform.request_url
       time: cdn_transform.timestamp_time
-    row: 46
+    row: 33
     col: 0
-    width: 24
-    height: 10
+    width: 8
+    height: 7
   - name: Hit Rate by Metro
     title: Hit Rate by Metro
     model: cdn
@@ -124,7 +126,7 @@
       asn: ip_asn.asn
       url: cdn_transform.request_url
       time: cdn_transform.timestamp_time
-    row: 68
+    row: 59
     col: 0
     width: 24
     height: 12
@@ -207,7 +209,7 @@
       asn: ip_asn.asn
       url: cdn_transform.request_url
       time: cdn_transform.timestamp_time
-    row: 82
+    row: 73
     col: 0
     width: 24
     height: 9
@@ -258,7 +260,7 @@
       url: cdn_transform.request_url
       time: cdn_transform.timestamp_time
       "# of minutes": cdn_transform.num_of_minutes
-    row: 91
+    row: 82
     col: 0
     width: 24
     height: 13
@@ -308,7 +310,7 @@
       url: cdn_transform.request_url
       time: cdn_transform.timestamp_time
       "# of minutes": cdn_transform.num_of_minutes
-    row: 58
+    row: 49
     col: 0
     width: 24
     height: 10
@@ -454,9 +456,9 @@
       asn: ip_asn.asn
       url: cdn_transform.request_url
       time: cdn_transform.timestamp_time
-    row: 33
-    col: 0
-    width: 11
+    row: 40
+    col: 16
+    width: 8
     height: 7
   - title: Request by Protocal
     name: Request by Protocal
@@ -507,7 +509,7 @@
     row: 40
     col: 0
     width: 8
-    height: 6
+    height: 7
   - title: Response Size vs Cache Fill Size
     name: Response Size vs Cache Fill Size
     model: cdn
@@ -603,19 +605,21 @@
       asn: ip_asn.asn
       url: cdn_transform.request_url
       time: cdn_transform.timestamp_time
-    row: 40
+    row: 33
     col: 8
     width: 8
-    height: 6
+    height: 7
   - title: Request by ASN
     name: Request by ASN
     model: cdn
     explore: cdn_transform
-    type: looker_column
+    type: looker_pie
     fields: [cdn_transform.count, ip_asn.asn]
     sorts: [cdn_transform.count desc]
-    limit: 500
+    limit: 20
     query_timezone: UTC
+    value_labels: legend
+    label_type: labPer
     x_axis_gridlines: false
     y_axis_gridlines: true
     show_view_names: false
@@ -644,6 +648,7 @@
     show_silhouette: false
     totals_color: "#808080"
     defaults_version: 1
+    series_types: {}
     listen:
       Metro: cdn_transform.metro
       CacheID: cdn_transform.cacheid
@@ -651,8 +656,8 @@
       url: cdn_transform.request_url
       time: cdn_transform.timestamp_time
     row: 33
-    col: 11
-    width: 13
+    col: 16
+    width: 8
     height: 7
   - title: Request by Extension
     name: Request by Extension
@@ -701,9 +706,9 @@
       url: cdn_transform.request_url
       time: cdn_transform.timestamp_time
     row: 40
-    col: 16
+    col: 8
     width: 8
-    height: 6
+    height: 7
   - name: "<span class='fa fa-globe'> Overall Demographic Information </span>"
     type: text
     title_text: "<span class='fa fa-globe'> Overall Demographic Information </span>"
@@ -716,7 +721,7 @@
     type: text
     title_text: "<span class='fa fa-fire'> Hit Rate Analysis </span>"
     subtitle_text: "<p>Is the cache working effectively? </p>"
-    row: 56
+    row: 47
     col: 0
     width: 24
     height: 2
@@ -724,7 +729,7 @@
     type: text
     title_text: "<span class='fa fa-car''> Latency Analysis </span>"
     subtitle_text: "<p>How is the network speed? </p>"
-    row: 80
+    row: 71
     col: 0
     width: 24
     height: 2

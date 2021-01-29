@@ -91,35 +91,42 @@ view: retention_interval {
 
   dimension: retention_interval {
     type: number
-    sql: ${TABLE}.retention_interval ;;
+    sql: ${TABLE}.retention_interval/3600 ;;
+    # value_format_name: decimal_2
+    value_format: "0.00 \" Hours\""
   }
 
   measure: retention_avg {
     type: average
     sql: ${retention_interval} ;;
+    value_format: "0.00 \" Hours\""
   }
   measure: retention_interval_p99 {
     type: percentile
     percentile: 99
     sql: ${retention_interval} ;;
+    value_format: "0.00 \" Hours\""
   }
 
   measure: retention_interval_p95 {
     type: percentile
     percentile: 95
     sql: ${retention_interval} ;;
+    value_format: "0.00 \" Hours\""
   }
 
   measure: retention_interval_p90 {
     type: percentile
     percentile: 90
     sql: ${retention_interval} ;;
+    value_format: "0.00 \" Hours\""
   }
 
   measure: retention_interval_p50 {
     type: percentile
     percentile: 50
     sql: ${retention_interval} ;;
+    value_format: "0.00 \" Hours\""
   }
 
   set: detail {
