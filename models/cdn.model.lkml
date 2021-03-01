@@ -31,6 +31,8 @@ explore: retention_interval {
   }
 }
 
+explore: final {}
+
 explore: cdnlog {
   join: cdnlog__resource {
     view_label: "Cdnlog: Resource"
